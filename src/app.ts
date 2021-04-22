@@ -6,6 +6,9 @@ import { Request, Response } from "express"
 import { ApiError } from "./errors/apiErrors";
 import cors from "cors"
 const bp = require('body-parser')
+import { graphqlHTTP } from 'express-graphql';
+import { schema } from './graphql/schema';
+import authMiddleware from "./middleware/basic-auth"
 
 
 dotenv.config();
@@ -14,7 +17,6 @@ const debug = require("debug")("app")
 
 app.use(bp.json())
 app.use(bp.urlencoded({ extended: true }))
-
 import logger, { stream } from "./middleware/logger";
 const morganFormat = process.env.NODE_ENV == "production" ? "combined" : "dev"
 app.use(require("morgan")(morganFormat, { stream }));
@@ -22,6 +24,26 @@ logger.log("info", "Server started");
 
 //åbner public folderen for tilgående
 app.use(express.static(path.join(process.cwd(), "public")));
+//app.use("/graphql", authMiddleware)
+app.use("/graphql", (req, res, next) => {
+  const body = req.body;
+  if (body && body.query && body.query.includes("createFriend")) {
+    console.log("Create")
+    return next();
+  }
+  if (body && body.operationName && body.query.includes("IntrospectionQuery")) {
+    return next();
+  }
+  if (body.query && (body.mutation || body.query)) {
+    return authMiddleware(req, res, next)
+  }
+  next()
+})
+
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  graphiql: true,
+}));
 
 app.use("/api/friends", cors(), friendsRoutes)
 
