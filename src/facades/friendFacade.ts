@@ -3,21 +3,26 @@ import { Db, Collection, ObjectID } from "mongodb";
 import bcrypt from "bcryptjs";
 import { ApiError } from '../errors/apiErrors';
 import Joi, { ValidationError } from "joi"
-
+import {Gender} from "../interfaces/IFriend"
+const myType = Gender
 const BCRYPT_ROUNDS = 10;
 
 const USER_INPUT_SCHEMA = Joi.object({
   firstName: Joi.string().min(2).max(40).required(),
   lastName: Joi.string().min(2).max(50).required(),
   password: Joi.string().min(4).max(30).required(),
-  email: Joi.string().email().required()
+  email: Joi.string().email().required(),
+  gender:Joi.string(),
+  age: Joi.number().min(0).max(110)
 })
 
 const USER_INPUT_EDIT_SCHEMA = Joi.object({
   firstName: Joi.string().min(2).max(40),
   lastName: Joi.string().min(2).max(50),
   password: Joi.string().min(4).max(30),
-  email: Joi.string().email().required()
+  email: Joi.string().email().required(),
+  gender:Joi.string(),
+  age: Joi.number().min(0).max(110)
 })
 
 class FriendsFacade {

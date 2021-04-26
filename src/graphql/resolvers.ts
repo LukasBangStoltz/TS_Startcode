@@ -24,11 +24,11 @@ export function setupFacade(db: any) {
 export const resolvers = {
   Query: {
 
-    getAllFriends: (root: any, _: any, context: any) => {
+    allFriends: (root: any, _: any, context: any) => {
 
-      if (!context.credentials || !context.credentials.role || context.credentials.role !== "admin") {
-        throw new ApiError("Not Authorized", 401)
-      }
+      // if (!context.credentials || !context.credentials.role || context.credentials.role !== "admin") {
+      //   throw new ApiError("Not Authorized", 401)
+      // }
 
       return friendFacade.getAllFriendsV2()
 

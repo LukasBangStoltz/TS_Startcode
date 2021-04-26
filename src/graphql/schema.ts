@@ -2,11 +2,20 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { resolvers } from './resolvers';
 
 const typeDefs = `
+
+enum Gender {
+    MALE
+    FEMALE
+    OTHER
+}
+
     type Friend {
         id: ID
         firstName: String
         lastName: String
         email: String
+        age: Int
+        gender: Gender
         role: String
     }
     """
@@ -17,7 +26,7 @@ const typeDefs = `
         Returns all details for all Friends
         (Should probably require 'admin' rights if your are using authentication)
         """
-        getAllFriends : [Friend]!
+        allFriends : [Friend]!
         """
         Only required if you ALSO wan't to try a version where the result is fetched from the existing endpoint
         """
@@ -30,12 +39,16 @@ const typeDefs = `
         lastName: String!
         password: String!
         email: String!
+        age: Int!
+        gender: Gender!
     }
     input FriendEditInput {
         firstName: String
         lastName: String
         password: String
         email: String!
+        age: Int!
+        gender: Gender!
     }
     type Mutation {
         """

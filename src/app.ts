@@ -24,21 +24,22 @@ logger.log("info", "Server started");
 
 //åbner public folderen for tilgående
 app.use(express.static(path.join(process.cwd(), "public")));
-//app.use("/graphql", authMiddleware)
-app.use("/graphql", (req, res, next) => {
-  const body = req.body;
-  if (body && body.query && body.query.includes("createFriend")) {
-    console.log("Create")
-    return next();
-  }
-  if (body && body.operationName && body.query.includes("IntrospectionQuery")) {
-    return next();
-  }
-  if (body.query && (body.mutation || body.query)) {
-    return authMiddleware(req, res, next)
-  }
-  next()
-})
+app.use(cors())
+//app.use("/graphql", cors(), authMiddleware)
+// app.use("/graphql", (req, res, next) => {
+//   const body = req.body;
+//   if (body && body.query && body.query.includes("createFriend")) {
+//     console.log("Create")
+//     return next();
+//   }
+//   if (body && body.operationName && body.query.includes("IntrospectionQuery")) {
+//     return next();
+//   }
+//   if (body.query && (body.mutation || body.query)) {
+//     return authMiddleware(req, res, next)
+//   }
+//   next()
+// })
 
 app.use('/graphql', graphqlHTTP({
   schema: schema,
