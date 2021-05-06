@@ -33,6 +33,7 @@ describe("## Verify the Friends Facade ##", () => {
             { firstName: "jens", lastName: "ole", email: "jens@ole.dk", password: hashedPW }
             ])
     })
+//TODO: fix gender, så test kan køres igen
 
     describe("Verify the addFriend method", () => {
         xit("It should Add the user Jan", async () => {
