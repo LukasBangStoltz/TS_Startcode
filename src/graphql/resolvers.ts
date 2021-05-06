@@ -1,10 +1,26 @@
 import FriendFacade from '../facades/friendFacade';
+import PositionFacade from '../facades/positionFacade';
 import { IFriend } from '../interfaces/IFriend';
 import { ApiError } from '../errors/apiErrors';
 import { Request } from "express";
 import fetch from "node-fetch"
+import IPosition from '../interfaces/IPosition';
+
+interface IpositionInput {
+  email: string,
+  longitude: number,
+  latitude: number
+}
 
 
+interface IFindInput {
+  email: string,
+  password: string,
+  longitude: number,
+  latitude: number,
+  distance: number
+}
+let positionFacade: PositionFacade;
 
 let friendFacade: FriendFacade;
 
@@ -18,7 +34,12 @@ export function setupFacade(db: any) {
   if (!friendFacade) {
     friendFacade = new FriendFacade(db)
   }
+  if (!positionFacade) {
+    positionFacade = new PositionFacade(db)
+  }
 }
+
+
 
 // resolver map
 export const resolvers = {
@@ -36,7 +57,7 @@ export const resolvers = {
 
     findOne: (_: object, { input }: { input: string }) => {
 
-     
+
 
       return friendFacade.getFriendFromEmail(input)
 
@@ -64,8 +85,32 @@ export const resolvers = {
     editFriend: async (_: object, { input }: { input: IFriend }) => {
       return friendFacade.editFriendV2(input.email, input)
     },
-    deleteFriend: async (_: object, {input}: {input:string}) => {
+    deleteFriend: async (_: object, { input }: { input: string }) => {
       return friendFacade.deleteFriend(input)
+    },
+    addOrUpdatePosition: async (_: object, { input }: { input: IpositionInput }) => {
+
+      const result = positionFacade.addOrUpdatePosition(input.email, input.longitude, input.latitude);
+      if ((await result).name) {
+        return true
+      }
+
+      return false
+
+
+    },
+
+
+    //lav find nearby players
+
+    findNearbyFriends: async (_: object, { input }: { input: IFindInput }) => {
+
+      const result = positionFacade.findNearbyFriends(input.email, input.password, input.longitude, input.latitude, input.distance);
+
+
+      return result
+
+
     },
   }
 };

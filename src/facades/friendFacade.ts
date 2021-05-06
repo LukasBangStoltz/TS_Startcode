@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import { ApiError } from '../errors/apiErrors';
 import Joi, { ValidationError } from "joi"
 import {Gender} from "../interfaces/IFriend"
-const myType = Gender
 const BCRYPT_ROUNDS = 10;
 
 const USER_INPUT_SCHEMA = Joi.object({

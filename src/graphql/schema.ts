@@ -1,7 +1,7 @@
 import { makeExecutableSchema } from 'graphql-tools';
 import { resolvers } from './resolvers';
 
-const typeDefs = `
+const typeDefs = `#graphql
 
 enum Gender {
     MALE
@@ -50,6 +50,20 @@ enum Gender {
         age: Int!
         gender: Gender!
     }
+
+    input PositionInput {
+        email: String!
+        longitude: Float!
+        latitude: Float!
+    }
+
+    input FindInput{
+        email: String!
+        password: String!
+        longitude: Float!
+        latitude: Float!
+        distance: Float!
+    }
     type Mutation {
         """
         Allows anyone (non authenticated users) to create a new friend
@@ -57,6 +71,8 @@ enum Gender {
         createFriend(input: FriendInput): Friend
         editFriend(input: FriendEditInput): Friend
         deleteFriend(input: String): Boolean
+        addOrUpdatePosition(input: PositionInput): Boolean
+        findNearbyFriends(input: FindInput): [Friend]! 
     }
 `;
 
